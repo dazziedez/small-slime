@@ -22,9 +22,10 @@ class ErrorHandler(commands.Cog):
             await ctx.send_embed(description='You do not have permission to use this command.')
         elif isinstance(error, commands.CommandNotFound):
             commands_list = [cmd.name for cmd in self.bot.commands]
-            closest_match, _ = process.extractOne(
+            closest_match, score = process.extractOne(
                 ctx.invoked_with, commands_list)
-            await ctx.send_embed(description=f"Command not found. Did you mean `{closest_match}`?")
+            if score > 50:
+                await ctx.send_embed(description=f"Command not found. Did you mean `{closest_match}`?")
         else:
             await ctx.send_embed(description=error)
 
