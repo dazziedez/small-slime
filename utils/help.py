@@ -47,6 +47,12 @@ class CustomHelpCommand(HelpCommand):
             embed = discord.Embed(
                 title=f"{group.cog.qualified_name} - {group.qualified_name}", description=group.help or "No description provided.", color=self.context.bot.config.vars.COLOR)
 
+            embed.add_field(name="Aliases", value=", ".join(
+                group.aliases) if group.aliases else "No aliases", inline=True)
+
+            embed.add_field(
+                name="Module", value=group.cog.qualified_name, inline=True)
+
             embed.add_field(
                 name="Usage", value=f"```{self.get_command_signature(group)}```", inline=False)
 
@@ -58,6 +64,9 @@ class CustomHelpCommand(HelpCommand):
 
             embed.add_field(name="Aliases", value=", ".join(
                 command.aliases) if command.aliases else "No aliases", inline=True)
+
+            embed.add_field(
+                name="Module", value=group.cog.qualified_name, inline=True)
 
             embed.add_field(
                 name="Usage", value=f"```{self.get_command_signature(command)}```", inline=False)
@@ -72,7 +81,9 @@ class CustomHelpCommand(HelpCommand):
         aliases = ", ".join(
             command.aliases) if command.aliases else "No aliases"
         usage = f"```{self.get_command_signature(command)}```"
-        embed.add_field(name="Aliases", value=aliases, inline=False)
+        embed.add_field(name="Aliases", value=aliases, inline=True)
+        embed.add_field(
+            name="Module", value=command.cog.qualified_name, inline=True)
         embed.add_field(name="Usage", value=usage, inline=False)
 
         await self.context.reply(embed=embed)

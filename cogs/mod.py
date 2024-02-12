@@ -47,102 +47,105 @@ class Moderation(commands.Cog):
     async def purge(self, ctx, *, args: str = None):
         """Purges messages from the current channel.\nYou may mention a user to only delete messages by them."""
         await ctx.message.delete()
-        await ctx.channel.typing()
-        user = None
-        limit = 10
+        async with ctx.channel.typing():
+            user = None
+            limit = 10
 
-        if args:
-            parts = args.split()
-        else:
-            parts = ["10"]
-        for part in parts:
-            if part.isdigit():
-                limit = int(part)
+            if args:
+                parts = args.split()
             else:
-                try:
-                    user = await commands.MemberConverter().convert(ctx, part)
-                except commands.MemberNotFound:
-                    return
+                parts = ["10"]
+            for part in parts:
+                if part.isdigit():
+                    limit = int(part)
+                else:
+                    try:
+                        user = await commands.MemberConverter().convert(ctx, part)
+                    except commands.MemberNotFound:
+                        return
 
-        if not user:
-            deleted = await ctx.channel.purge(limit=limit)
-            await ctx.send_embed(description=f'{len(deleted)} message{"s" if len(deleted) != 1 else ""} deleted.', delete_after=15)
-        else:
-            messages_due = []
-            async for message in ctx.channel.history(limit=100):
-                if message.author == user and len(messages_due) < limit:
-                    messages_due.append(message)
+            if not user:
+                deleted = await ctx.channel.purge(limit=limit)
+                await ctx.send_embed(description=f"{len(deleted)} message{'s' if len(deleted) != 1 else ''} deleted.", reply=False, delete_after=15)
+            else:
+                messages_due = []
+                async for message in ctx.channel.history(limit=100):
+                    if message.author == user:
+                        messages_due.append(message)
 
-            await ctx.channel.delete_messages(messages_due)
-            await ctx.send_embed(description=f'{len(messages_due)} message{"s" if len(messages_due) != 1 else ""} by {user.mention} deleted.', delete_after=15)
+                    if len(messages_due) >= limit:
+                        break
+
+                await ctx.channel.delete_messages(messages_due)
+                await ctx.send_embed(description=f"{len(messages_due)} message{'s' if len(messages_due) != 1 else ''} by {user.mention} deleted.", reply=False, delete_after=15)
 
     @purge.command(name="startswith", aliases=["sw"])
     @commands.has_permissions(manage_messages=True)
     async def sw(self, ctx: commands.Context, keyword: str, limit: int):
         """Purges messages that start with a specific keyword."""
         await ctx.message.delete()
-        await ctx.channel.typing()
-        messages_due = []
+        async with ctx.channel.typing():
+            messages_due = []
 
-        async for message in ctx.channel.history(limit=100):
-            if message.content.lower().startswith(keyword):
-                messages_due.append(message)
-            if len(messages_due) >= limit:
-                break
+            async for message in ctx.channel.history(limit=100):
+                if message.content.lower().startswith(keyword):
+                    messages_due.append(message)
+                if len(messages_due) >= limit:
+                    break
 
-        await ctx.channel.delete_messages(messages_due)
-        await ctx.send_embed(description=f'{len(messages_due)} message{"s" if len(messages_due) != 1 else ""} starting with `{keyword}` deleted.', delete_after=15)
+            await ctx.channel.delete_messages(messages_due)
+            await ctx.send_embed(description=f'{len(messages_due)} message{"s" if len(messages_due) != 1 else ""} starting with `{keyword}` deleted.', reply=False, delete_after=15)
 
     @purge.command(name="endswith", aliases=["ew"])
     @commands.has_permissions(manage_messages=True)
     async def ew(self, ctx, keyword: str, limit: int):
         """Purges messages that end with a specific keyword."""
         await ctx.message.delete()
-        await ctx.channel.typing()
-        messages_due = []
+        async with ctx.channel.typing():
+            messages_due = []
 
-        async for message in ctx.channel.history(limit=100):
-            if message.content.lower().endswith(keyword):
-                messages_due.append(message)
-            if len(messages_due) >= limit:
-                break
+            async for message in ctx.channel.history(limit=100):
+                if message.content.lower().endswith(keyword):
+                    messages_due.append(message)
+                if len(messages_due) >= limit:
+                    break
 
-        await ctx.channel.delete_messages(messages_due)
-        await ctx.send_embed(description=f'{len(messages_due)} message{"s" if len(messages_due) != 1 else ""} ending with `{keyword}` deleted.', delete_after=15)
+            await ctx.channel.delete_messages(messages_due)
+            await ctx.send_embed(description=f'{len(messages_due)} message{"s" if len(messages_due) != 1 else ""} ending with `{keyword}` deleted.', reply=False, delete_after=15)
 
     @purge.command(name="bots")
     @commands.has_permissions(manage_messages=True)
     async def bots(self, ctx, limit: int):
         """Purges bot messages."""
         await ctx.message.delete()
-        await ctx.channel.typing()
-        messages_due = []
+        async with ctx.channel.typing():
+            messages_due = []
 
-        async for message in ctx.channel.history(limit=100):
-            if message.author.bot:
-                messages_due.append(message)
-            if len(messages_due) >= limit:
-                break
+            async for message in ctx.channel.history(limit=100):
+                if message.author.bot:
+                    messages_due.append(message)
+                if len(messages_due) >= limit:
+                    break
 
-        await ctx.channel.delete_messages(messages_due)
-        await ctx.send_embed(description=f'{len(messages_due)} bot message{"s" if len(messages_due) != 1 else ""} deleted.', delete_after=15)
+            await ctx.channel.delete_messages(messages_due)
+            await ctx.send_embed(description=f'{len(messages_due)} bot message{"s" if len(messages_due) != 1 else ""} deleted.', reply=False, delete_after=15)
 
     @purge.command(name="images", aliases=["img", "media"])
     @commands.has_permissions(manage_messages=True)
     async def img(self, ctx, limit: int):
         """Purges messages with attachments."""
         await ctx.message.delete()
-        await ctx.channel.typing()
-        messages_due = []
+        async with ctx.channel.typing():
+            messages_due = []
 
-        async for message in ctx.channel.history(limit=100):
-            if message.attachments or message.embeds:
-                messages_due.append(message)
-            if len(messages_due) >= limit:
-                break
+            async for message in ctx.channel.history(limit=100):
+                if message.attachments or message.embeds:
+                    messages_due.append(message)
+                if len(messages_due) >= limit:
+                    break
 
-        await ctx.channel.delete_messages(messages_due)
-        await ctx.send_embed(description=f'{len(messages_due)} message{"s" if len(messages_due) != 1 else ""} with attachments deleted.', delete_after=15)
+            await ctx.channel.delete_messages(messages_due)
+            await ctx.send_embed(description=f'{len(messages_due)} message{"s" if len(messages_due) != 1 else ""} with attachments deleted.', reply=False, delete_after=15)
 
     @commands.command(name="pin")
     @commands.has_guild_permissions(manage_messages=True)
