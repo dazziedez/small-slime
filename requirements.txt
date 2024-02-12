@@ -2,3 +2,4 @@ discord.py==2.3.2
 fuzzywuzzy==0.18.0
 toml==0.10.2
 python-Levenshtein
+jishaku
