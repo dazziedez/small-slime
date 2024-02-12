@@ -75,7 +75,7 @@ class CustomHelpCommand(HelpCommand):
         embed.add_field(name="Aliases", value=aliases, inline=False)
         embed.add_field(name="Usage", value=usage, inline=False)
 
-        await self.context.send(embed=embed)
+        await self.context.reply(embed=embed)
 
 
 def setup(bot):
