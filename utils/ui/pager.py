@@ -1,10 +1,14 @@
 import discord
-from discord.ui import Button, View
+import random
 
+from string import ascii_letters
+from discord.ui import Button
 
-class PaginatorView(View):
+from utils.ui import view
+
+class PaginatorView(view.View):
     def __init__(self, embeds, author):
-        super().__init__(timeout=180)
+        super().__init__(author, timeout=0)
         self.embeds = embeds
         self.author = author
         self.current_page = 0
@@ -12,28 +16,25 @@ class PaginatorView(View):
         for i, embed in enumerate(self.embeds, start=1):
             embed.set_footer(text=f"{i} of {len(self.embeds)}")
         
-        self.previous_button = Button(
+        self.previous_button = Button(custom_id=f"{author.id}_{''.join(i for i in random.choices(ascii_letters, k=15))}",
             emoji="<:previous:1206595324857032765>", style=discord.ButtonStyle.blurple, disabled=True)
         self.previous_button.callback = self.go_to_previous
         self.add_item(self.previous_button)
 
-        self.next_button = Button(
+        self.next_button = Button(custom_id=f"{author.id}_{''.join(i for i in random.choices(ascii_letters, k=15))}",
             emoji="<:next:1206595285711720488>", style=discord.ButtonStyle.blurple)
         self.next_button.callback = self.go_to_next
         self.add_item(self.next_button)
 
-        self.jump_button = Button(
+        self.jump_button = Button(custom_id=f"{author.id}_{''.join(i for i in random.choices(ascii_letters, k=15))}",
             emoji="<:jumpto:1206595355236499506>", style=discord.ButtonStyle.grey)
         self.jump_button.callback = self.jump_to
         self.add_item(self.jump_button)
 
-        self.close_button = Button(
+        self.close_button = Button(custom_id=f"{author.id}_{''.join(i for i in random.choices(ascii_letters, k=15))}",
             emoji="<:close:1206595397628203028>", style=discord.ButtonStyle.red)
         self.close_button.callback = self.stop_pages
         self.add_item(self.close_button)
-
-    async def interaction_check(self, interaction):
-        return interaction.user == self.author
 
     async def go_to_previous(self, interaction):
         if self.current_page > 0:
@@ -76,8 +77,7 @@ class PaginatorView(View):
         await interaction.response.send_modal(modal)
 
     async def stop_pages(self, interaction):
-        for item in self.children:
-            item.disabled = True
+        self.disable_all()
         await interaction.response.edit_message(view=self)
 
 
