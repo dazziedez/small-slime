@@ -11,13 +11,13 @@ from discord.gateway import DiscordWebSocket
 import toml
 
 from utils.ui import embeds
-from utils import help, mobile
+from utils import mobile
 
 
 class Bot(commands.Bot):
     def __init__(self):
         print("[Startup] Initializing bot...")
-        super().__init__(intents=Intents.all(), command_prefix=commands.when_mentioned_or(","), help_command=help.CustomHelpCommand())
+        super().__init__(intents=Intents.all(), command_prefix=commands.when_mentioned_or(","))
 
         self.cwd = str(Path(__file__).parents[0].parents[0])
         print(f"[Startup] Current working directory set to: {self.cwd}")
