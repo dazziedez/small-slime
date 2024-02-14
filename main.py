@@ -8,7 +8,7 @@ from discord import Intents
 from discord.ext import commands
 from discord.gateway import DiscordWebSocket
 
-import toml
+import toml, os
 
 from utils.ui import embeds
 from utils import mobile
@@ -23,7 +23,7 @@ class Bot(commands.Bot):
         print(f"[Startup] Current working directory set to: {self.cwd}")
         self.config = self.load_config()
 
-        self.token = self.config.keys.TOKEN
+        self.token = os.environ.get("SLIME_TOKEN")
 
         # monkey patches - https://github.com/4rshww/Discord_Phone/
         commands.Context.send_embed = embeds.send_embed
