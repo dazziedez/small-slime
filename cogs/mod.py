@@ -42,10 +42,10 @@ class Moderation(commands.Cog):
         else:
             await ctx.send_embed(description=f"{ctx.channel.mention} is not locked.")
 
-    @commands.group(name="purge", description="explod", invoke_without_command=True, aliases=["p", "c", "clear"])
+    @commands.group(name="purge", brief="Mention a user to delete messages by them.", description="explod", invoke_without_command=True, aliases=["p", "c", "clear"])
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, *, args: str = None):
-        """Purges messages from the current channel.\nYou may mention a user to only delete messages by them."""
+        """Purges messages from the current channel."""
         await ctx.message.delete()
         async with ctx.channel.typing():
             user = None
@@ -130,7 +130,7 @@ class Moderation(commands.Cog):
             await ctx.channel.delete_messages(messages_due)
             await ctx.send_embed(description=f'{len(messages_due)} bot message{"s" if len(messages_due) != 1 else ""} deleted.', reply=False, delete_after=15)
 
-    @purge.command(name="images", aliases=["img", "media"])
+    @purge.command(name="images", brief="Also deletes embed links.", aliases=["img", "media"])
     @commands.has_permissions(manage_messages=True)
     async def img(self, ctx, limit: int):
         """Purges messages with attachments."""
@@ -147,16 +147,16 @@ class Moderation(commands.Cog):
             await ctx.channel.delete_messages(messages_due)
             await ctx.send_embed(description=f'{len(messages_due)} message{"s" if len(messages_due) != 1 else ""} with attachments deleted.', reply=False, delete_after=15)
 
-    @commands.command(name="pin")
+    @commands.command(name="pin", brief="Also pins a reply or message id/link.")
     @commands.has_guild_permissions(manage_messages=True)
     async def pin(self, ctx, message=None):
-        """Pins a message."""
+        """Pins the latest message"""
         await self.pin_unpin(ctx, message, True)
 
-    @commands.command(name="unpin")
+    @commands.command(name="unpin", brief="Also unpins a reply or message id/link.")
     @commands.has_guild_permissions(manage_messages=True)
     async def unpin(self, ctx, message=None):
-        """Unpins a message."""
+        """Unpins the latest message."""
         await self.pin_unpin(ctx, message, False)
 
     async def pin_unpin(self, ctx, message, pin):

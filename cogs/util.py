@@ -12,7 +12,7 @@ class Utility(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-	@commands.command()
+	@commands.command(brief="beep boop :p")
 	async def ping(self, ctx):
 		"""Pings the bot."""
 		await ctx.send_embed(description=f"🏓 {round(self.bot.latency *  1000)}ms")
@@ -38,7 +38,7 @@ class Utility(commands.Cog):
 
 		await ctx.send(embed=embed)
 
-	@mc.command(name="all")
+	@mc.command(name="all", brief="Includes bots.")
 	async def all(self, ctx):
 		"""Displays the total member count across all guilds."""
 		all_users = [
