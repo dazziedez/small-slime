@@ -78,6 +78,18 @@ class Utility(commands.Cog):
 		else:
 			await ctx.send("No messages found in this channel.")
 
+	@commands.group(name="avatar", invoke_without_command=True, aliases=["av", "pfp"])
+	async def av(self, ctx, user: discord.User | discord.Member = None):
+		user = user or ctx.author
+		await ctx.send_embed(title=user.display_name, image_url=user.display_avatar)
+
+	@av.command(name="guild", aliases=["server"])
+	async def guild(self, ctx, user: discord.Member = None):
+		user = user or ctx.author
+		if not ctx.guild or not user.guild_avatar:
+			return await ctx.send_embed(description="This user doesn't have a server avatar")
+
+		await ctx.send_embed(title=user.display_name, image_url=user.guild_avatar)
 
 async def setup(bot: commands.Bot) -> None:
 	await bot.add_cog(Utility(bot))

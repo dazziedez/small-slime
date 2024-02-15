@@ -1,2 +1,13 @@
+[keys]
+TOKEN = "token"
+
 [vars]
-COLOR = 0x000000
+COLOR = 0x00000
+
+[db_config]
+user = "postgres"
+password = "admin"
+database = "slime"
+command_timeout = 30
+max_size = 10
+min_size = 5
