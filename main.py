@@ -39,7 +39,7 @@ class Bot(commands.Bot):
         if not message.guild:
             return commands.when_mentioned_or(self.default_prefix)(bot, message)
 
-        guild = await Guilds.get_or_none(id=message.guild.id)
+        guild = await Guilds.get_or_none(guild_id=message.guild.id)
 
         return commands.when_mentioned_or(guild.prefix if guild and guild.prefix else self.default_prefix)(bot, message)
 
@@ -82,6 +82,21 @@ class Bot(commands.Bot):
 
         except Exception as e:
             print(f"[Database] Failed to connect to the database: {e}")
+
+        current_guild_ids = {guild.id async for guild in self.fetch_guilds()}
+        stored_guild_ids = {guild.guild_id for guild in await Guilds.all()}
+
+        new_guilds = current_guild_ids - stored_guild_ids
+        for guild_id in new_guilds:
+            guild, created = await Guilds.get_or_create(guild_id=guild_id)
+            if created:
+                print(f"[Database] Added guild {guild.guild_id} to the database")
+
+        guilds_to_remove = stored_guild_ids - current_guild_ids
+        for guild_id in guilds_to_remove:
+            guild = await Guilds.get(guild_id=guild_id)
+            await guild.delete()
+            print(f"[Database] Removed guild {guild_id} from the database")
 
     async def main(self) -> None:
         print("[Startup ] Bot starting...")
