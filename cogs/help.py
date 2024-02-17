@@ -3,8 +3,14 @@ from discord.ext.commands import HelpCommand
 from utils.ui.pager import page
 import discord
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from utils import slime
 
 class CustomHelpCommand(HelpCommand):
+    bot: 'slime.Bot'
+    
     def __init__(self):
         super().__init__(command_attrs={'aliases': ['h', 'commands'], 'brief': 'hi'})
 

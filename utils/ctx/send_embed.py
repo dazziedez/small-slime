@@ -1,4 +1,5 @@
 import discord
+from utils.ui.view import View
 
 async def send_embed(self, title:str=None, description:str=None, color:hex=None, footer_text:str=None, footer_icon_url:str=None, author_name:str=None, author_url:str=None, thumbnail_url:str=None, image_url:str=None, delete_after:float=None, reply:bool=True):
     embed = discord.Embed(title=title, description=description, color=color or self.bot.config.vars.COLOR)

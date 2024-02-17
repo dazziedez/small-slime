@@ -1,11 +1,18 @@
 from discord.ext import commands
+
 import random
 import discord
 
-class Fun(commands.Cog):
-    bot: commands.Bot
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from utils import slime
+
+class Fun(commands.Cog):
+    bot: 'slime.Bot'
+    
     def __init__(self, bot):
+        super().__init__()
         self.bot = bot
 
     def randint_fixated(self, range:tuple, id:int|str):

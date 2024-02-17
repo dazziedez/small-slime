@@ -4,3 +4,4 @@ toml==0.10.2
 python-Levenshtein==0.25.0
 jishaku==2.5.2
 tortoise-orm==0.20.0
+cogwatch==3.3.1

@@ -1,14 +1,17 @@
 import discord
-
 from discord.ext import commands
-from discord import app_commands
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from utils import slime
 
 class Moderation(commands.Cog):
     """Command group for moderation commands related to guilds."""
-    bot: commands.Bot
+    bot: 'slime.Bot'
 
     def __init__(self, bot):
+        super().__init__()
         self.bot = bot
 
     @commands.group(name="thread", description="Thread management commands")
