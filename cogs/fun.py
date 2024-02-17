@@ -1,12 +1,17 @@
 from discord.ext import commands
 
+import json
 import random
 import discord
+
+from functools import partial
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from utils import slime
+
+from bs4 import BeautifulSoup
 
 class Fun(commands.Cog):
     bot: 'slime.Bot'
@@ -46,6 +51,26 @@ class Fun(commands.Cog):
         user2 = user2 or ctx.author
         await ctx.send_embed(description=f":revolving_hearts: **{str(user1)}** x **{str(user2)}**: `{self.randint_fixated((0, 100), f'{user1.id}{user2.id}_ship')}%`")
 
+    @commands.command(name="cashapp", aliases=["ca"])
+    async def cashapp(self, ctx, user):
+        try:
+            async with self.bot.web_client.get(f"https://cash.app/${user}") as response:
+                if response.status != 200:
+                    await ctx.send_embed(description=f"Failed to retrieve data for **{user}**.")
+                    return
+
+                content = await response.text()
+                profile_json_str = content.split('var profile = ')[1].split(';</script>')[0]
+                profile_data = json.loads(profile_json_str)
+
+                display_name = profile_data.get("display_name", "User not found")
+                if display_name == "User not found":
+                    await ctx.send_embed(description=f"User **{user}** not found.")
+                    return
+
+                await ctx.send_embed(title=display_name, description=f"https://cash.app/${user}", image_url=f"https://cash.app/qr/${user}?size=1024")
+        except:
+            await ctx.send_embed(description=f"An error occurred while processing **{user}**.")
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Fun(bot))
