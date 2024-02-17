@@ -1,13 +1,18 @@
 import discord
 from discord.ext import commands
-from discord import app_commands
 
 from utils.orm import Guilds
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from utils import slime
+
 class Servers(commands.Cog):
-    bot: commands.Bot
+    bot: 'slime.Bot'
 
     def __init__(self, bot):
+        super().__init__()
         self.bot = bot
 
     @commands.Cog.listener()
@@ -41,6 +46,8 @@ class Servers(commands.Cog):
         if not ctx.guild:
             return await ctx.send_embed(description="Run this command in a guild")
 
+        if len(prefix) > 5:
+            return await ctx.send_embed(description="A prefix cannot be longer than **5 characters**")
         guild_id = ctx.guild.id
 
         guild, _ = await Guilds.get_or_create(guild_id=guild_id)

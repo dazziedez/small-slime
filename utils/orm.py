@@ -9,6 +9,7 @@ class Guilds(models.Model):
 
 class Users(models.Model):
     user_id: int = fields.BigIntField(pk=True)
+    donor: bool = fields.BooleanField(default=False)
 
     class Meta:
         table = "users"
