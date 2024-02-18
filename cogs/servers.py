@@ -9,6 +9,9 @@ if TYPE_CHECKING:
     from utils import slime
 
 class Servers(commands.Cog):
+    """
+    A collection of server management commands.
+    """
     bot: 'slime.Bot'
 
     def __init__(self, bot):
@@ -17,7 +20,7 @@ class Servers(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        row, created = await Guilds.get_or_create(guild_id=guild.id)
+        _, created = await Guilds.get_or_create(guild_id=guild.id)
         if created:
             print(f"[Database] Added guild {guild.name} to the database")
     
@@ -30,6 +33,9 @@ class Servers(commands.Cog):
 
     @commands.group(name="prefix", invoke_without_command=True, description="View the server's prefix")
     async def prefix(self, ctx):
+        """
+        Command group for managing the server's prefix.
+        """
         if not ctx.guild:
             return await ctx.send_embed(description="Run this command in a guild")
 
@@ -43,6 +49,9 @@ class Servers(commands.Cog):
 
     @prefix.command(name="set", description="Set the server's prefix")
     async def set_prefix(self, ctx, prefix):
+        """
+        Command to set the server's prefix.
+        """
         if not ctx.guild:
             return await ctx.send_embed(description="Run this command in a guild")
 
@@ -61,6 +70,9 @@ class Servers(commands.Cog):
 
     @prefix.command(name="remove", description="Remove the server's prefix")
     async def remove_prefix(self, ctx):
+        """
+        Command to remove the server's prefix.
+        """
         if not ctx.guild:
             return await ctx.send_embed(description="Run this command in a guild")
 

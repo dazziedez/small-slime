@@ -54,9 +54,9 @@ class Utility(commands.Cog):
 			member for guild in self.bot.guilds for member in guild.members]
 		await ctx.send_embed(description=f"🔎 I can see **{len(all_users)}** members across **{len(self.bot.guilds)}**")
 
-	@commands.command(name="getbotinvite", aliases=["gbi"])
+	@commands.command(name="getbotinvite", aliases=["gbi"], brief="Avaliable presets\n`none`, `all`, `admin`, `mod`")
 	async def gbi(self, ctx, bot: discord.User = None, preset: str = "none"):
-		"""Generates an invite link for the bot.\nAvaliable presets: `none`, `all`, `admin`, `mod`"""
+		"""Generates an invite link for the bot."""
 		presets = {
 			"none": 0,
 			"all": 70368744177655,
@@ -68,7 +68,7 @@ class Utility(commands.Cog):
 		bot = bot or self.bot.user
 
 		if not bot.bot:
-			return await ctx.send_embed(description=f"**{str(bot)}** is not a bot")
+			return await ctx.send_embed(description=f"{bot.mention} is not a bot")
 
 		preset = presets.get(preset, 0)
 
@@ -89,11 +89,13 @@ class Utility(commands.Cog):
 
 	@commands.group(name="avatar", invoke_without_command=True, aliases=["av", "pfp"])
 	async def av(self, ctx, user: discord.User | discord.Member = None):
+		"""Displays the avatar of a user."""
 		user = user or ctx.author
 		await ctx.send_embed(title=user.display_name, image_url=user.display_avatar)
 
 	@av.command(name="guild", aliases=["server"])
 	async def guild(self, ctx, user: discord.Member = None):
+		"""Displays the server avatar of a user."""
 		user = user or ctx.author
 		if not ctx.guild or not user.guild_avatar:
 			return await ctx.send_embed(description="This user doesn't have a server avatar")

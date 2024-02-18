@@ -26,12 +26,12 @@ class CustomHelpCommand(HelpCommand):
         if embeds:
             await page(self.context, embeds)
 
-    async def create_cog_embed(self, cog, commands):
+    async def create_cog_embed(self, cog, _commands):
         embed_title = cog.qualified_name if cog else 'No Category'
         embed_description = f"{cog.description if cog else ''}\n\n"
-        filtered_commands = await self.filter_commands(commands, sort=True)
+        filtered_commands = await self.filter_commands(_commands, sort=True)
         command_signatures = [
-            f"`{command.name}`" for command in filtered_commands]
+            f"`{'📂' if isinstance(command, commands.Group) else ''}{command.name}`" for command in filtered_commands]
         embed_description += ", ".join(command_signatures)
         return discord.Embed(title=embed_title, description=embed_description, color=self.context.bot.config.vars.COLOR)
 
@@ -41,7 +41,7 @@ class CustomHelpCommand(HelpCommand):
         for command in filtered_commands:
             if not command.parents:
                 embed = discord.Embed(
-                    title=f"{cog.qualified_name} - {command.name}", description="", color=self.context.bot.config.vars.COLOR)
+                    title=f"{cog.qualified_name} - {'📂 ' if isinstance(command, commands.Group) else ''}{command.name}", description="", color=self.context.bot.config.vars.COLOR)
 
                 aliases = ", ".join(
                     command.aliases) if command.aliases else "No aliases"
@@ -76,7 +76,7 @@ class CustomHelpCommand(HelpCommand):
             embeds.insert(0, embed)
 
         for command in filtered_commands:
-            embed = discord.Embed(title=f"{group.qualified_name} - {command.name}",
+            embed = discord.Embed(title=f"{group.qualified_name} - {'📂 ' if isinstance(command, commands.Group) else ''}{command.name}",
                                   description=command.help or "No description provided.", color=self.context.bot.config.vars.COLOR)
 
             embed.add_field(name="Aliases", value=", ".join(
@@ -93,7 +93,7 @@ class CustomHelpCommand(HelpCommand):
         await page(self.context, embeds)
 
     async def send_command_help(self, command):
-        embed = discord.Embed(title=f"{command.cog.qualified_name if command.cog else 'No Category'} - {command.qualified_name}",
+        embed = discord.Embed(title=f"{command.cog.qualified_name if command.cog else 'No Category'} - {'📂 ' if isinstance(command, commands.Group) else ''}{command.qualified_name}",
                               description=command.help or "No description", color=self.context.bot.config.vars.COLOR)
         aliases = ", ".join(
             command.aliases) if command.aliases else "No aliases"

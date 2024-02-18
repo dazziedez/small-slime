@@ -23,10 +23,11 @@ class ErrorHandler(commands.Cog):
             await ctx.send_embed(description='You are missing a required argument.')
         elif isinstance(error, commands.BadArgument):
             await ctx.send_embed(description='Invalid argument provided.')
-        elif isinstance(error, commands.CheckFailure):
+        elif isinstance(error, commands.CheckFailure) or isinstance(error, commands.MissingPermissions):
             await ctx.send_embed(description='You do not have permission to use this command.')
         elif isinstance(error, commands.BotMissingPermissions):
             await ctx.send_embed(description='I do not have the required permissions to run this command.')
+           
         elif isinstance(error, commands.CommandNotFound):
             commands_list = [cmd.name for cmd in self.bot.commands]
             closest_match, score = process.extractOne(

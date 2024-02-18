@@ -8,6 +8,9 @@ if TYPE_CHECKING:
     from utils import slime
 
 class Donor(commands.Cog):
+    """
+    Manage donors.
+    """
     bot: 'slime.Bot'
 
     def __init__(self, bot):
@@ -17,15 +20,24 @@ class Donor(commands.Cog):
     @commands.group(name="donor", description="Manage donors")
     @commands.is_owner()
     async def donor(self, _):
+        """
+        Manage donors.
+        """
         return False
 
     @donor.command(name="add", description="Give a member donor perks")
     async def d_add(self, ctx, user: discord.User):
+        """
+        Give a member donor perks.
+        """
         await Users.update_or_create(user_id=user.id, defaults={'donor': True})
         await ctx.send_embed(description=f"{user.mention} is now a donor")
 
     @donor.command(name="remove", description="Remove a member's donor perks")
     async def d_remove(self, ctx, user: discord.User):
+        """
+        Remove a member's donor perks.
+        """
         donor = await Users.get_or_none(user_id=user.id)
         if not donor or not donor.donor:
             return await ctx.send_embed(description=f"{user.mention} was not a donor")
@@ -36,6 +48,9 @@ class Donor(commands.Cog):
 
     @donor.command(name="inspect", aliases=["check"], description="Give a member donor perks")
     async def d_check(self, ctx, user: discord.User):
+        """
+        Check if a member is a donor.
+        """
         donor = await Users.get_or_none(user_id=user.id)
         if not donor or not donor.donor:
             return await ctx.send_embed(description=f"{user.mention} is not a donor")
