@@ -15,8 +15,16 @@ class CustomHelpCommand(HelpCommand):
         super().__init__(command_attrs={'aliases': ['h', 'commands'], 'brief': 'hi'})
 
     async def send_bot_help(self, mapping):
-        embeds = [await self.create_cog_embed(cog, commands) for cog, commands in mapping.items() if commands]
-        await page(self.context, embeds)
+        embeds = []
+        for cog, commands in mapping.items():
+            if not cog:
+                continue
+            if commands:
+                filtered_commands = await self.filter_commands(commands, sort=True)
+                if filtered_commands:
+                    embeds.append(await self.create_cog_embed(cog, filtered_commands))
+        if embeds:
+            await page(self.context, embeds)
 
     async def create_cog_embed(self, cog, commands):
         embed_title = cog.qualified_name if cog else 'No Category'
@@ -102,3 +110,4 @@ class CustomHelpCommand(HelpCommand):
 
 async def setup(bot):
     bot.help_command = CustomHelpCommand()
+
