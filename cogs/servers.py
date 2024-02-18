@@ -26,10 +26,9 @@ class Servers(commands.Cog):
     
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
-        row, exists = await Guilds.get_or_none(guild_id=guild.id)
-        if exists:
-            await row.delete()
-            print(f"[Database] Removed guild {guild.name} to the database")
+        row, _ = await Guilds.get_or_none(guild_id=guild.id)
+        await row.delete()
+        print(f"[Database] Removed guild {guild.name} to the database")
 
     @commands.group(name="prefix", invoke_without_command=True, description="View the server's prefix")
     async def prefix(self, ctx):
